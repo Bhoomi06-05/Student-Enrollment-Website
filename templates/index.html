@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICT Computer Education - Student Enrollment Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #222; overflow-x: hidden; }
+
+        /* NAVBAR */
+        header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #1a3a5c; padding: 0 40px; height: 66px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-brand-icon {
+            width: 44px; height: 44px; background: white; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #1a3a5c; font-size: 1.3rem;
+        }
+        .nav-brand-text .title { color: #fff; font-size: 1rem; font-weight: 700; display: block; }
+        .nav-brand-text .sub   { color: #f0a500; font-size: 0.68rem; display: block; }
+        nav ul { list-style: none; display: flex; gap: 4px; align-items: center; }
+        nav ul li a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500; padding: 7px 14px;
+            border-radius: 5px; display: flex; align-items: center; gap: 6px;
+            transition: background 0.2s;
+        }
+        nav ul li a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        /* HERO */
+        .hero { position: relative; height: 100vh; min-height: 550px; overflow: hidden; margin-top: 66px; }
+        .slides-container { position: absolute; inset: 0; }
+        .slide {
+            position: absolute; inset: 0; background-size: cover;
+            background-position: center; opacity: 0;
+            transition: opacity 1.4s ease-in-out;
+        }
+        .slide.active { opacity: 1; }
+        .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=85'); }
+        .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?w=1600&q=85'); }
+        .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&q=85'); }
+        .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1600&q=85'); }
+        .slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1600&q=85'); }
+
+        .slide-overlay {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(135deg, rgba(10,25,50,0.80) 0%, rgba(26,58,92,0.68) 100%);
+        }
+        .hero-text {
+            position: absolute; inset: 0; z-index: 2;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 0 24px;
+            animation: fadeUp 0.9s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+
+        .hero-logo-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .hero-logo-circle {
+            width: 70px; height: 70px; background: rgba(255,255,255,0.12);
+            border: 2px solid rgba(240,165,0,0.6); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: #f0a500; backdrop-filter: blur(6px);
+        }
+        .hero-logo-text .mict { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1; }
+        .hero-logo-text .full { font-size: 0.75rem; color: rgba(255,255,255,0.7); letter-spacing: 1px; }
+
+        .hero-app-name {
+            font-size: clamp(1.6rem, 4vw, 3rem); font-weight: 700; color: #fff;
+            line-height: 1.2; margin-bottom: 12px;
+            text-shadow: 0 3px 24px rgba(0,0,0,0.45);
+        }
+        .hero-app-name span { color: #f0a500; }
+        .hero-divider {
+            width: 60px; height: 3px;
+            background: linear-gradient(90deg, #f0a500, #27ae60);
+            border-radius: 2px; margin: 0 auto 16px;
+        }
+        .hero-sub { font-size: 0.95rem; color: rgba(255,255,255,0.82); font-weight: 300; margin-bottom: 32px; }
+
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .hero-btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: #27ae60; color: white; padding: 13px 32px;
+            border-radius: 6px; text-decoration: none; font-weight: 600;
+            font-size: 0.93rem; transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 18px rgba(39,174,96,0.45);
+        }
+        .hero-btn-primary:hover { background: #219a52; transform: translateY(-2px); }
+        .hero-btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 2px solid rgba(255,255,255,0.5); color: white;
+            padding: 13px 32px; border-radius: 6px; text-decoration: none;
+            font-weight: 500; font-size: 0.93rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        .hero-btn-outline:hover { border-color: #f0a500; background: rgba(240,165,0,0.12); color: #f0a500; }
+
+        .arrow-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3);
+            color: white; width: 46px; height: 46px; border-radius: 50%;
+            font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; transition: background 0.3s; backdrop-filter: blur(4px);
+        }
+        .arrow-btn:hover { background: rgba(240,165,0,0.4); border-color: #f0a500; }
+        .arrow-btn.prev { left: 22px; }
+        .arrow-btn.next { right: 22px; }
+
+        .hero-dots { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; gap: 8px; }
+        .hero-dot { width: 30px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.4); border: none; cursor: pointer; padding: 0; transition: background 0.3s, width 0.3s; }
+        .hero-dot.active { background: #27ae60; width: 46px; }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: linear-gradient(135deg, #4a5fc1 0%, #7b2ff7 100%);
+            padding: 36px 40px; display: flex; justify-content: center; flex-wrap: wrap;
+        }
+        .stat-item { flex: 1; min-width: 160px; max-width: 240px; text-align: center; padding: 10px 20px; border-right: 1px solid rgba(255,255,255,0.18); }
+        .stat-item:last-child { border-right: none; }
+        .stat-item i { font-size: 2rem; color: rgba(255,255,255,0.85); display: block; margin-bottom: 10px; }
+        .stat-item .num { display: block; font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+        .stat-item .label { font-size: 0.82rem; color: rgba(255,255,255,0.75); }
+
+        /* ABOUT STRIP */
+        .about-strip {
+            background: #fff; padding: 50px 40px;
+            display: flex; align-items: center; justify-content: center;
+            gap: 60px; flex-wrap: wrap; border-bottom: 3px solid #f0a500;
+        }
+        .about-strip-logo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .about-strip-logo .circle {
+            width: 80px; height: 80px; background: #1a3a5c; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #f0a500;
+        }
+        .about-strip-logo h2 { font-size: 1.3rem; font-weight: 800; color: #1a3a5c; }
+        .about-strip-logo p  { font-size: 0.8rem; color: #27ae60; font-weight: 600; }
+        .about-strip-info { max-width: 500px; }
+        .about-strip-info h3 { font-size: 1.1rem; font-weight: 700; color: #1a3a5c; margin-bottom: 10px; }
+        .about-strip-info p  { color: #666; font-size: 0.88rem; line-height: 1.75; }
+        .about-strip-badges { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+        .badge { font-size: 0.75rem; font-weight: 600; padding: 5px 14px; border-radius: 20px; }
+        .badge.green { background: #edfaf3; color: #27ae60; border: 1px solid #b2dfcc; }
+        .badge.blue  { background: #eaf4fd; color: #2980b9; border: 1px solid #aed6f1; }
+        .badge.gold  { background: #fffbea; color: #d68910; border: 1px solid #f9e4a0; }
+
+        /* FEATURES */
+        .features-section { padding: 80px 40px; background: #f5f7fa; text-align: center; }
+        .section-title { font-size: clamp(1.7rem,3vw,2.3rem); font-weight: 800; color: #1a1a2e; margin-bottom: 8px; }
+        .section-sub { color: #888; font-size: 0.92rem; margin-bottom: 52px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; max-width: 1000px; margin: 0 auto; }
+        .feat-card {
+            background: white; border-radius: 12px; padding: 36px 28px 32px;
+            text-align: center; box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .feat-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.11); }
+        .icon-wrap { width: 62px; height: 62px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 14px; font-size: 1.7rem; }
+        .feat-card h3 { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+        .feat-card p  { color: #888; font-size: 0.84rem; line-height: 1.65; }
+        .ic-green  { background: #edfaf3; color: #27ae60; }
+        .ic-blue   { background: #eaf4fd; color: #2980b9; }
+        .ic-teal   { background: #eafaff; color: #00bcd4; }
+        .ic-gold   { background: #fffbea; color: #f0a500; }
+        .ic-indigo { background: #f0f0ff; color: #5c5ce0; }
+        .ic-red    { background: #fef0f0; color: #e74c3c; }
+
+        /* CAMPUS SLIDER */
+        .campus-section { padding: 60px 0 80px; background: #1a3a5c; }
+        .campus-section .section-title { color: #fff; text-align: center; }
+        .campus-section .section-sub { color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 40px; }
+        .campus-slider-wrap { width: 100%; overflow: hidden; position: relative; }
+        .campus-track {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            transition: transform 0.6s ease;
+        }
+        .campus-slide {
+            min-width: 100%;
+            height: 480px;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .campus-slide img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center; display: block;
+        }
+        .campus-slide .cap {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(10,30,60,0.88), transparent);
+            color: #fff; padding: 40px 30px 20px;
+            font-size: 1rem; font-weight: 600;
+        }
+        .campus-controls { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 32px; }
+        .c-btn {
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+            color: white; width: 44px; height: 44px; border-radius: 50%;
+            font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; transition: background 0.3s;
+        }
+        .c-btn:hover { background: #27ae60; border-color: #27ae60; }
+        .c-dots { display: flex; gap: 8px; }
+        .c-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,0.3); border: none; cursor: pointer; padding: 0;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .c-dot.active { background: #27ae60; transform: scale(1.4); }
+
+        /* QUICK ACTIONS */
+        .actions-section { padding: 80px 40px; background: linear-gradient(135deg, #27ae60 0%, #11998e 100%); text-align: center; }
+        .actions-section .section-title { color: #fff; }
+        .actions-section .section-sub   { color: rgba(255,255,255,0.75); margin-bottom: 50px; }
+        .actions-grid { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+        .action-card {
+            border: 2px solid rgba(255,255,255,0.45); border-radius: 14px;
+            padding: 32px 28px; min-width: 180px; text-align: center;
+            text-decoration: none; color: white; flex: 1; max-width: 200px;
+            transition: background 0.3s, transform 0.2s, border-color 0.3s;
+        }
+        .action-card:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-4px); }
+        .action-card i { font-size: 2rem; display: block; margin-bottom: 14px; }
+        .action-card .a-title { font-size: 1rem; font-weight: 700; display: block; margin-bottom: 6px; }
+        .action-card .a-sub   { font-size: 0.78rem; color: rgba(255,255,255,0.72); }
+
+        /* FOOTER */
+        footer { background: #1a3a5c; padding: 46px 40px 20px; }
+        .footer-top { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); max-width: 960px; margin: 0 auto; }
+        .footer-col { text-align: center; }
+        .footer-col .f-icon { font-size: 1.5rem; color: #27ae60; margin-bottom: 10px; display: block; }
+        .footer-col h4 { color: #fff; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+        .footer-col p  { color: rgba(255,255,255,0.55); font-size: 0.8rem; line-height: 1.6; }
+        .footer-col .gold { color: #f0a500; font-weight: 600; font-size: 0.78rem; margin-top: 6px; display: block; }
+        .footer-bottom { text-align: center; padding-top: 20px; color: rgba(255,255,255,0.4); font-size: 0.78rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 860px) {
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .footer-top    { grid-template-columns: 1fr; gap: 24px; }
+            .about-strip   { gap: 30px; }
+            .campus-slide  { height: 320px; }
+        }
+        @media (max-width: 560px) {
+            header { padding: 0 18px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .actions-grid  { flex-direction: column; align-items: center; }
+            .campus-slide  { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <a href="/" class="nav-brand">
+        <div class="nav-brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="nav-brand-text">
+            <span class="title">MICT Computer Education</span>
+            <span class="sub">✦ Student Enrollment Portal</span>
+        </div>
+    </a>
+    <nav>
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="/fees"><i class="fas fa-rupee-sign"></i> Fees</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/enroll"><i class="fas fa-edit"></i> Enroll</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="slides-container">
+        <div class="slide active"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+    </div>
+    <div class="slide-overlay"></div>
+    <div class="hero-text">
+        <div class="hero-logo-row">
+            <div class="hero-logo-circle"><i class="fas fa-graduation-cap"></i></div>
+            <div class="hero-logo-text">
+                <div class="mict">MICT</div>
+                <div class="full">COMPUTER EDUCATION</div>
+            </div>
+        </div>
+        <div class="hero-app-name">Student <span>Enrollment</span> Portal</div>
+        <div class="hero-divider"></div>
+        <p class="hero-sub" id="heroSub">Enroll in top KLiC programs and start your IT journey today!</p>
+        <div class="hero-btns">
+            <a href="/fees" class="hero-btn-primary"><i class="fas fa-list-alt"></i> View Programs</a>
+            <a href="/contact" class="hero-btn-outline"><i class="fas fa-phone"></i> Contact Us</a>
+        </div>
+    </div>
+    <button class="arrow-btn prev" onclick="moveHero(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="arrow-btn next" onclick="moveHero(1)"><i class="fas fa-chevron-right"></i></button>
+    <div class="hero-dots" id="heroDots"></div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item"><i class="fas fa-user-graduate"></i><span class="num">5,000+</span><span class="label">Students Enrolled</span></div>
+    <div class="stat-item"><i class="fas fa-book-open"></i><span class="num">20+</span><span class="label">KLiC Programs</span></div>
+    <div class="stat-item"><i class="fas fa-check-circle"></i><span class="num">99.9%</span><span class="label">Satisfaction Rate</span></div>
+    <div class="stat-item"><i class="fas fa-clock"></i><span class="num">24/7</span><span class="label">Support Available</span></div>
+</div>
+
+<!-- ABOUT STRIP -->
+<div class="about-strip">
+    <div class="about-strip-logo">
+        <div class="circle"><i class="fas fa-university"></i></div>
+        <h2>MICT</h2>
+        <p>Computer Education</p>
+    </div>
+    <div class="about-strip-info">
+        <h3>Maharashtra Institute of Computer Technology</h3>
+        <p>MICT Computer Education is a government-recognised institute offering MKCL-certified KLiC programs with practical IT training in programming, design, accounting, and networking, delivered by expert faculty using modern lab facilities.</p>
+        <div class="about-strip-badges">
+            <span class="badge green">✅ Govt. Recognised</span>
+            <span class="badge blue">🎓 KLiC / MKCL Certified</span>
+            <span class="badge gold">⭐ Est. 2000</span>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+    <div class="section-title">Our Features</div>
+    <div class="section-sub">Everything you need for a smooth enrollment experience at MICT</div>
+    <div class="features-grid">
+        <div class="feat-card"><div class="icon-wrap ic-green"><i class="fas fa-laptop-code"></i></div><h3>Online Enrollment</h3><p>Register for KLiC courses quickly and easily from anywhere through our portal.</p></div>
+        <div class="feat-card"><div class="icon-wrap ic-blue"><i class="fas fa-chart-bar"></i></div><h3>Academic Dashboard</h3><p>View your grades, attendance, and academic progress all in one place.</p></div>
+        <div class="feat-card"><div class="icon-wrap ic-teal"><i class="fas fa-book-reader"></i></div><h3>Course Materials</h3><p>Access lecture notes, assignments, and resources uploaded by your faculty.</p></div>
+        <div class="feat-card"><div class="icon-wrap ic-gold"><i class="fas fa-file-invoice-dollar"></i></div><h3>Fee Management</h3><p>View fee structure, pay dues online, and download payment receipts instantly.</p></div>
+        <div class="feat-card"><div class="icon-wrap ic-indigo"><i class="fas fa-users"></i></div><h3>Expert Faculty</h3><p>Learn from experienced educators dedicated to your IT career success.</p></div>
+        <div class="feat-card"><div class="icon-wrap ic-red"><i class="fas fa-certificate"></i></div><h3>KLiC Certifications</h3><p>Earn MKCL recognised KLiC certificates accepted by top employers.</p></div>
+    </div>
+</section>
+
+<!-- CAMPUS SLIDER -->
+<section class="campus-section">
+    <div style="padding: 0 40px;">
+        <div class="section-title">Our MICT Campus</div>
+        <div class="section-sub">Our modern computer lab and course facilities</div>
+    </div>
+    <div class="campus-slider-wrap">
+        <div class="campus-track" id="campusTrack">
+            <div class="campus-slide">
+                <img src="{{ url_for('static', filename='comp2.jpg') }}" alt="MICT Computer Lab">
+                <div class="cap">🖥️ Our Computer Lab</div>
+            </div>
+            <div class="campus-slide">
+                <img src="{{ url_for('static', filename='comp1.jpg') }}" alt="MICT KLiC Courses">
+                <div class="cap">📚 KLiC Course Boards</div>
+            </div>
+            <div class="campus-slide">
+                <img src="{{ url_for('static', filename='comp3.jpg') }}" alt="MICT Programming">
+                <div class="cap">💻 Programming & Design Courses</div>
+            </div>
+        </div>
+    </div>
+    <div class="campus-controls">
+        <button class="c-btn" onclick="moveCampus(-1)"><i class="fas fa-chevron-left"></i></button>
+        <div class="c-dots" id="campusDots"></div>
+        <button class="c-btn" onclick="moveCampus(1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+</section>
+
+<!-- QUICK ACTIONS -->
+<section class="actions-section">
+    <div class="section-title">Quick Actions</div>
+    <div class="section-sub">Get started with MICT in seconds</div>
+    <div class="actions-grid">
+        <a href="/enroll" class="action-card">
+    <i class="fas fa-edit"></i>
+    <span class="a-title">Enroll Now</span>
+    <span class="a-sub">Fill admission form</span>
+</a>
+        <a href="/contact" class="action-card"><i class="fas fa-sign-in-alt"></i><span class="a-title">Apply Now</span><span class="a-sub">Submit your application</span></a>
+        <a href="/about"   class="action-card"><i class="fas fa-info-circle"></i><span class="a-title">Learn More</span><span class="a-sub">About our programs</span></a>
+        <a href="/fees"    class="action-card"><i class="fas fa-rupee-sign"></i><span class="a-title">View Fees</span><span class="a-sub">Explore fee structure</span></a>
+        <a href="/contact" class="action-card"><i class="fas fa-envelope"></i><span class="a-title">Contact Us</span><span class="a-sub">Get in touch today</span></a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-graduation-cap"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Advanced computer education for the next generation of IT professionals.</p>
+            <span class="gold">✦ Govt. Recognised Institution</span>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-university"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Delivering quality KLiC & MKCL certified IT education since 2000.</p>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-envelope"></i></span>
+            <h4>Contact</h4>
+            <p>info@mict.edu<br>+91 98765 43210<br>Maharashtra, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 MICT Computer Education. All Rights Reserved.</div>
+</footer>
+
+<script>
+// HERO SLIDESHOW
+const slides   = document.querySelectorAll('.slide');
+const heroDots = document.getElementById('heroDots');
+const heroSubs = [
+    'Enroll in top KLiC programs and start your IT journey today!',
+    'KLiC Photoshop, Tally Prime, English, Hardware & Networking courses.',
+    'C & C++, Advanced Excel, Designing Courses — Build your career with MICT!',
+    'Expert faculty, modern lab, govt. recognised certifications.',
+    'Join 5000+ students already enrolled at MICT Computer Education!'
+];
+let hIdx = 0, hTimer;
+
+slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => { clearInterval(hTimer); goHero(i); startHeroTimer(); };
+    heroDots.appendChild(d);
+});
+
+function goHero(idx) {
+    slides[hIdx].classList.remove('active');
+    heroDots.children[hIdx].classList.remove('active');
+    hIdx = (idx + slides.length) % slides.length;
+    slides[hIdx].classList.add('active');
+    heroDots.children[hIdx].classList.add('active');
+    document.getElementById('heroSub').textContent = heroSubs[hIdx];
+}
+function moveHero(dir) { clearInterval(hTimer); goHero(hIdx + dir); startHeroTimer(); }
+function startHeroTimer() { hTimer = setInterval(() => goHero(hIdx + 1), 4500); }
+startHeroTimer();
+
+// CAMPUS SLIDER
+const campusTrack  = document.getElementById('campusTrack');
+const campusSlides = campusTrack.querySelectorAll('.campus-slide');
+const campusDots   = document.getElementById('campusDots');
+let cIdx = 0, cTimer;
+
+campusSlides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'c-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => { clearInterval(cTimer); goCampus(i); startCampusTimer(); };
+    campusDots.appendChild(d);
+});
+
+function goCampus(idx) {
+    const total = campusSlides.length;
+    cIdx = ((idx % total) + total) % total;
+    campusTrack.style.transform = `translateX(-${cIdx * 100}%)`;
+    document.querySelectorAll('.c-dot').forEach((d, i) => d.classList.toggle('active', i === cIdx));
+}
+function moveCampus(dir) { clearInterval(cTimer); goCampus(cIdx + dir); startCampusTimer(); }
+function startCampusTimer() { cTimer = setInterval(() => goCampus(cIdx + 1), 3500); }
+startCampusTimer();
+</script>
+
+</body>
+</html>

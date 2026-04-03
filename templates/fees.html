@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fees - MICT Computer Education</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #222; overflow-x: hidden; }
+
+        /* NAVBAR */
+        header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #1a3a5c; padding: 0 40px; height: 66px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-brand-icon {
+            width: 44px; height: 44px; background: white; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #1a3a5c; font-size: 1.3rem;
+        }
+        .nav-brand-text .title { color: #fff; font-size: 1rem; font-weight: 700; display: block; }
+        .nav-brand-text .sub   { color: #f0a500; font-size: 0.68rem; display: block; }
+        nav ul { list-style: none; display: flex; gap: 4px; align-items: center; }
+        nav ul li a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500; padding: 7px 14px;
+            border-radius: 5px; display: flex; align-items: center; gap: 6px;
+            transition: background 0.2s;
+        }
+        nav ul li a:hover, nav ul li a.active { background: rgba(255,255,255,0.12); color: #fff; }
+
+        /* PAGE HERO */
+        .page-hero {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            padding: 100px 40px 60px; text-align: center; position: relative; overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: -100px; right: -100px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(240,165,0,0.12), transparent 70%);
+            border-radius: 50%;
+        }
+        .page-hero .tag {
+            display: inline-block;
+            background: rgba(240,165,0,0.18); border: 1px solid rgba(240,165,0,0.5);
+            color: #f7c948; font-size: 0.78rem; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 7px 22px; border-radius: 30px; margin-bottom: 18px;
+        }
+        .page-hero h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; color: #fff; margin-bottom: 14px; }
+        .page-hero h1 span { color: #f0a500; }
+        .page-hero p { color: rgba(255,255,255,0.75); font-size: 1rem; max-width: 560px; margin: 0 auto; line-height: 1.8; }
+        .breadcrumb { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+        .breadcrumb a { color: #f0a500; text-decoration: none; }
+        .breadcrumb i { font-size: 0.65rem; }
+
+        /* FILTER TABS */
+        .filter-section { background: #fff; padding: 30px 40px; text-align: center; border-bottom: 2px solid #f0f0f0; position: sticky; top: 66px; z-index: 99; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .filter-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 9px 22px; border-radius: 30px; border: 2px solid #e0e0e0;
+            background: white; color: #666; font-size: 0.84rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif;
+        }
+        .tab-btn:hover { border-color: #27ae60; color: #27ae60; }
+        .tab-btn.active { background: #1a3a5c; border-color: #1a3a5c; color: white; }
+
+        /* COURSES SECTION */
+        .courses-section { padding: 60px 40px; }
+        .cat-block { margin-bottom: 60px; }
+        .cat-header {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 28px; padding-bottom: 14px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+        .cat-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .cat-header h2 { font-size: 1.3rem; font-weight: 800; color: #1a3a5c; }
+        .cat-header span { font-size: 0.8rem; color: #888; font-weight: 400; }
+
+        .courses-grid {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+        }
+        .course-card {
+            background: white; border-radius: 14px; overflow: hidden;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(0,0,0,0.11); }
+
+        .card-top {
+            padding: 24px 22px 18px;
+            display: flex; align-items: flex-start; gap: 14px;
+        }
+        .card-icon {
+            width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+        }
+        .card-info h3 { font-size: 0.95rem; font-weight: 700; color: #1a3a5c; margin-bottom: 4px; }
+        .card-info p  { font-size: 0.8rem; color: #888; line-height: 1.5; }
+
+        .card-bottom {
+            padding: 14px 22px 18px;
+            border-top: 1px solid #f5f5f5;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-fee { font-size: 1.1rem; font-weight: 800; color: #27ae60; }
+        .card-fee small { font-size: 0.72rem; color: #888; font-weight: 400; display: block; }
+        .card-duration {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.78rem; color: #888;
+        }
+        .card-badge {
+            display: inline-block; font-size: 0.68rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 12px; margin-top: 6px;
+        }
+        .b-klic   { background: #edfaf3; color: #27ae60; }
+        .b-mkcl   { background: #eaf4fd; color: #2980b9; }
+        .b-pro    { background: #f0f0ff; color: #5c5ce0; }
+        .b-cert   { background: #fffbea; color: #d68910; }
+
+        /* COLOR SCHEMES */
+        .ic1 { background: #edfaf3; color: #27ae60; }
+        .ic2 { background: #eaf4fd; color: #2980b9; }
+        .ic3 { background: #fffbea; color: #f0a500; }
+        .ic4 { background: #f0f0ff; color: #5c5ce0; }
+        .ic5 { background: #fef0f0; color: #e74c3c; }
+        .ic6 { background: #eafaff; color: #00bcd4; }
+        .ic7 { background: #fff0f8; color: #e91e8c; }
+        .ic8 { background: #f0fff4; color: #1a8a4a; }
+
+        /* SUMMARY TABLE */
+        .summary-section { padding: 60px 40px; background: #1a3a5c; }
+        .summary-section .section-title { color: #fff; text-align: center; margin-bottom: 8px; }
+        .summary-section .section-sub   { color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 40px; }
+        .section-title { font-size: clamp(1.7rem,3vw,2.3rem); font-weight: 800; color: #1a1a2e; margin-bottom: 8px; }
+        .section-sub { color: #888; font-size: 0.92rem; margin-bottom: 52px; }
+
+        .fee-table {
+            width: 100%; max-width: 900px; margin: 0 auto;
+            border-collapse: collapse; background: white; border-radius: 14px;
+            overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        .fee-table thead tr { background: #f0a500; }
+        .fee-table thead th { padding: 16px 20px; text-align: left; font-size: 0.88rem; font-weight: 700; color: #1a3a5c; }
+        .fee-table tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
+        .fee-table tbody tr:hover { background: #f8fbff; }
+        .fee-table tbody tr:last-child { border-bottom: none; }
+        .fee-table tbody td { padding: 14px 20px; font-size: 0.85rem; color: #444; }
+        .fee-table tbody td:first-child { font-weight: 600; color: #1a3a5c; }
+        .fee-green { color: #27ae60 !important; font-weight: 700 !important; }
+
+        /* CTA */
+        .cta-section {
+            padding: 80px 40px; text-align: center;
+            background: linear-gradient(135deg, #27ae60 0%, #11998e 100%);
+        }
+        .cta-section h2 { font-size: clamp(1.8rem,3vw,2.6rem); font-weight: 800; color: #fff; margin-bottom: 14px; }
+        .cta-section p  { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 36px; }
+        .btn-white {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: white; color: #27ae60; padding: 14px 36px;
+            border-radius: 6px; text-decoration: none; font-weight: 700;
+            font-size: 0.95rem; transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+        }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
+
+        /* FOOTER */
+        footer { background: #1a3a5c; padding: 46px 40px 20px; }
+        .footer-top { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); max-width: 960px; margin: 0 auto; }
+        .footer-col { text-align: center; }
+        .footer-col .f-icon { font-size: 1.5rem; color: #27ae60; margin-bottom: 10px; display: block; }
+        .footer-col h4 { color: #fff; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+        .footer-col p  { color: rgba(255,255,255,0.55); font-size: 0.8rem; line-height: 1.6; }
+        .footer-col .gold { color: #f0a500; font-weight: 600; font-size: 0.78rem; margin-top: 6px; display: block; }
+        .footer-bottom { text-align: center; padding-top: 20px; color: rgba(255,255,255,0.4); font-size: 0.78rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .courses-grid { grid-template-columns: 1fr 1fr; }
+            .footer-top { grid-template-columns: 1fr; gap: 24px; }
+        }
+        @media (max-width: 560px) {
+            header { padding: 0 18px; }
+            .courses-section { padding: 40px 16px; }
+            .courses-grid { grid-template-columns: 1fr; }
+            .filter-section { padding: 20px 16px; }
+            .page-hero { padding: 90px 24px 50px; }
+        }
+
+        /* HIDDEN CLASS FOR FILTER */
+        .cat-block.hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <a href="/" class="nav-brand">
+        <div class="nav-brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="nav-brand-text">
+            <span class="title">MICT Computer Education</span>
+            <span class="sub">✦ Student Enrollment Portal</span>
+        </div>
+    </a>
+    <nav>
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="/fees" class="active"><i class="fas fa-rupee-sign"></i> Fees</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/enroll"><i class="fas fa-edit"></i> Enroll</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+    <span class="tag"><i class="fas fa-rupee-sign"></i> &nbsp; Fee Structure</span>
+    <h1>Course Fees & <span>Programs</span></h1>
+    <p>Transparent and affordable fee structure for all KLiC, programming, finance, and computer courses at MICT.</p>
+    <div class="breadcrumb">
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Fees</span>
+    </div>
+</section>
+
+<!-- FILTER TABS -->
+<div class="filter-section">
+    <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filterCat('all')">All Courses</button>
+        <button class="tab-btn" onclick="filterCat('klic')">KLiC Programs</button>
+        <button class="tab-btn" onclick="filterCat('programming')">Programming</button>
+        <button class="tab-btn" onclick="filterCat('finance')">Finance & Accounts</button>
+        <button class="tab-btn" onclick="filterCat('design')">Design & Media</button>
+        <button class="tab-btn" onclick="filterCat('networking')">Networking & Hardware</button>
+        <button class="tab-btn" onclick="filterCat('office')">Office & Basics</button>
+    </div>
+</div>
+
+<!-- COURSES -->
+<div class="courses-section">
+
+    <!-- KLiC PROGRAMS -->
+    <div class="cat-block" data-cat="klic">
+        <div class="cat-header">
+            <div class="cat-icon ic1"><i class="fas fa-award"></i></div>
+            <div>
+                <h2>KLiC Certified Programs <span style="color:#27ae60;">(MKCL)</span></h2>
+                <span>Government recognised KLiC certifications by MKCL</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic1"><i class="fas fa-laptop-code"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC C & C++ Programming</h3>
+                        <p>Build career in programming language with C & C++ course.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fas fa-table"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC Advanced Excel</h3>
+                        <p>Build career in data management with Advanced Excel.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic3"><i class="fas fa-paint-brush"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC Photoshop</h3>
+                        <p>Gain creative designing skills in Photoshop course.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fas fa-calculator"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC Tally Prime with GST</h3>
+                        <p>Build career in accounting with Tally Prime & GST.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fas fa-language"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC English (Speak English)</h3>
+                        <p>Learn English language & art of communication.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic6"><i class="fas fa-network-wired"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC Hardware & Networking</h3>
+                        <p>Gain professional skills in hardware & networking.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic7"><i class="fas fa-vector-square"></i></div>
+                    <div class="card-info">
+                        <h3>KLiC Designing Courses</h3>
+                        <p>AutoCAD, CorelDRAW, 3D Modelling & Graphic Designing.</p>
+                        <span class="card-badge b-klic">KLiC Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹5,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic8"><i class="fas fa-certificate"></i></div>
+                    <div class="card-info">
+                        <h3>MS-CIT</h3>
+                        <p>Maharashtra's most popular computer literacy course by MKCL.</p>
+                        <span class="card-badge b-mkcl">MKCL Certified</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,200<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 5 Months</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRAMMING -->
+    <div class="cat-block" data-cat="programming">
+        <div class="cat-header">
+            <div class="cat-icon ic1"><i class="fas fa-code"></i></div>
+            <div>
+                <h2>Programming Courses</h2>
+                <span>Learn coding and software development</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic1"><i class="fab fa-python"></i></div>
+                    <div class="card-info">
+                        <h3>Python Programming</h3>
+                        <p>From basics to advanced Python with projects and libraries.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fab fa-java"></i></div>
+                    <div class="card-info">
+                        <h3>Java Programming</h3>
+                        <p>Core Java, OOP concepts, and application development.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic3"><i class="fab fa-html5"></i></div>
+                    <div class="card-info">
+                        <h3>Web Development</h3>
+                        <p>HTML, CSS, JavaScript, and responsive web design.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹5,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fas fa-database"></i></div>
+                    <div class="card-info">
+                        <h3>SQL & Database</h3>
+                        <p>MySQL, database design, queries, and management.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fab fa-android"></i></div>
+                    <div class="card-info">
+                        <h3>Android App Development</h3>
+                        <p>Build Android apps using Java/Kotlin with real projects.</p>
+                        <span class="card-badge b-pro">Advanced</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹6,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 5 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic6"><i class="fas fa-brain"></i></div>
+                    <div class="card-info">
+                        <h3>AI & Machine Learning Basics</h3>
+                        <p>Introduction to AI, ML concepts, and Python libraries.</p>
+                        <span class="card-badge b-pro">Advanced</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹7,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 5 Months</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="cat-block" data-cat="finance">
+        <div class="cat-header">
+            <div class="cat-icon ic3"><i class="fas fa-rupee-sign"></i></div>
+            <div>
+                <h2>Finance & Accounts Courses</h2>
+                <span>Accounting, GST, banking and finance programs</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic3"><i class="fas fa-file-invoice"></i></div>
+                    <div class="card-info">
+                        <h3>GST & Taxation</h3>
+                        <p>Complete GST filing, returns, and taxation concepts.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fas fa-calculator"></i></div>
+                    <div class="card-info">
+                        <h3>Tally ERP 9 + Prime</h3>
+                        <p>Complete accounting with Tally ERP 9 and Tally Prime.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fas fa-chart-line"></i></div>
+                    <div class="card-info">
+                        <h3>Financial Accounting</h3>
+                        <p>Basics of financial accounting, balance sheet, and ledgers.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fas fa-landmark"></i></div>
+                    <div class="card-info">
+                        <h3>Banking & Finance Basics</h3>
+                        <p>Banking operations, loans, insurance, and financial planning.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic1"><i class="fas fa-file-excel"></i></div>
+                    <div class="card-info">
+                        <h3>Excel for Finance</h3>
+                        <p>Advanced Excel formulas, pivot tables, and financial models.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic6"><i class="fas fa-receipt"></i></div>
+                    <div class="card-info">
+                        <h3>Payroll Management</h3>
+                        <p>Salary processing, PF, ESI, and payroll software handling.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESIGN -->
+    <div class="cat-block" data-cat="design">
+        <div class="cat-header">
+            <div class="cat-icon ic7"><i class="fas fa-palette"></i></div>
+            <div>
+                <h2>Design & Multimedia Courses</h2>
+                <span>Creative design, animation, and media production</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic7"><i class="fas fa-photo-video"></i></div>
+                    <div class="card-info">
+                        <h3>Adobe Photoshop</h3>
+                        <p>Photo editing, digital art, and graphic design skills.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fas fa-vector-square"></i></div>
+                    <div class="card-info">
+                        <h3>CorelDRAW</h3>
+                        <p>Vector graphics, logo design, and print media design.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fas fa-drafting-compass"></i></div>
+                    <div class="card-info">
+                        <h3>AutoCAD</h3>
+                        <p>2D & 3D drafting, architecture, and mechanical design.</p>
+                        <span class="card-badge b-pro">Professional</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹5,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fas fa-film"></i></div>
+                    <div class="card-info">
+                        <h3>Video Editing</h3>
+                        <p>Professional video editing with Premiere Pro & After Effects.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic3"><i class="fas fa-cube"></i></div>
+                    <div class="card-info">
+                        <h3>3D Modelling & Animation</h3>
+                        <p>3D Studio Max, modelling, texturing, and animation basics.</p>
+                        <span class="card-badge b-pro">Advanced</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹6,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic1"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="card-info">
+                        <h3>UI/UX Design</h3>
+                        <p>Figma, wireframing, user interface, and experience design.</p>
+                        <span class="card-badge b-pro">Professional</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹5,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NETWORKING -->
+    <div class="cat-block" data-cat="networking">
+        <div class="cat-header">
+            <div class="cat-icon ic6"><i class="fas fa-server"></i></div>
+            <div>
+                <h2>Networking & Hardware Courses</h2>
+                <span>IT infrastructure, networking, and hardware skills</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic6"><i class="fas fa-network-wired"></i></div>
+                    <div class="card-info">
+                        <h3>Computer Hardware & Repair</h3>
+                        <p>PC assembly, troubleshooting, and hardware maintenance.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fas fa-wifi"></i></div>
+                    <div class="card-info">
+                        <h3>Networking Fundamentals</h3>
+                        <p>LAN, WAN, TCP/IP, routers, switches, and protocols.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹4,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 3 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fas fa-shield-alt"></i></div>
+                    <div class="card-info">
+                        <h3>Cyber Security Basics</h3>
+                        <p>Ethical hacking basics, firewalls, and online safety.</p>
+                        <span class="card-badge b-pro">Advanced</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹5,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fas fa-cloud"></i></div>
+                    <div class="card-info">
+                        <h3>Cloud Computing Basics</h3>
+                        <p>AWS, Google Cloud, and Microsoft Azure fundamentals.</p>
+                        <span class="card-badge b-pro">Advanced</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹6,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 4 Months</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OFFICE & BASICS -->
+    <div class="cat-block" data-cat="office">
+        <div class="cat-header">
+            <div class="cat-icon ic2"><i class="fas fa-desktop"></i></div>
+            <div>
+                <h2>Office & Computer Basics</h2>
+                <span>Essential computer skills for everyone</span>
+            </div>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic2"><i class="fas fa-desktop"></i></div>
+                    <div class="card-info">
+                        <h3>Basic Computer Course</h3>
+                        <p>Computer fundamentals, typing, internet, and email basics.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹1,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 1 Month</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic1"><i class="fab fa-microsoft"></i></div>
+                    <div class="card-info">
+                        <h3>MS Office Complete</h3>
+                        <p>Word, Excel, PowerPoint, and Outlook for office work.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹2,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic3"><i class="fas fa-keyboard"></i></div>
+                    <div class="card-info">
+                        <h3>Typing Course</h3>
+                        <p>English & Marathi typing speed development course.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹1,000<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 1 Month</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic4"><i class="fab fa-google"></i></div>
+                    <div class="card-info">
+                        <h3>Google Workspace</h3>
+                        <p>Gmail, Google Docs, Sheets, Drive, and Meet for productivity.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹1,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 1 Month</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic5"><i class="fas fa-share-alt"></i></div>
+                    <div class="card-info">
+                        <h3>Digital Marketing Basics</h3>
+                        <p>Social media, SEO, Google Ads, and online marketing.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹3,500<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 2 Months</div>
+                </div>
+            </div>
+            <div class="course-card">
+                <div class="card-top">
+                    <div class="card-icon ic6"><i class="fas fa-file-powerpoint"></i></div>
+                    <div class="card-info">
+                        <h3>PowerPoint & Presentations</h3>
+                        <p>Professional presentations, animations, and slide design.</p>
+                        <span class="card-badge b-cert">Certificate</span>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="card-fee">₹1,200<small>Per Course</small></div>
+                    <div class="card-duration"><i class="fas fa-clock"></i> 1 Month</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- FEE SUMMARY TABLE -->
+<section class="summary-section">
+    <div class="section-title">Quick Fee Summary</div>
+    <div class="section-sub">All courses at a glance</div>
+    <table class="fee-table">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Category</th>
+                <th>Duration</th>
+                <th>Fee</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>MS-CIT</td><td>KLiC / MKCL</td><td>5 Months</td><td class="fee-green">₹4,200</td></tr>
+            <tr><td>KLiC C & C++</td><td>KLiC / Programming</td><td>3 Months</td><td class="fee-green">₹3,500</td></tr>
+            <tr><td>KLiC Advanced Excel</td><td>KLiC / Finance</td><td>2 Months</td><td class="fee-green">₹2,500</td></tr>
+            <tr><td>KLiC Tally Prime + GST</td><td>KLiC / Finance</td><td>3 Months</td><td class="fee-green">₹4,000</td></tr>
+            <tr><td>KLiC Photoshop</td><td>KLiC / Design</td><td>2 Months</td><td class="fee-green">₹3,000</td></tr>
+            <tr><td>KLiC English</td><td>KLiC / Language</td><td>2 Months</td><td class="fee-green">₹2,500</td></tr>
+            <tr><td>KLiC Hardware & Networking</td><td>KLiC / Networking</td><td>3 Months</td><td class="fee-green">₹4,500</td></tr>
+            <tr><td>Python Programming</td><td>Programming</td><td>3 Months</td><td class="fee-green">₹4,000</td></tr>
+            <tr><td>Web Development</td><td>Programming</td><td>4 Months</td><td class="fee-green">₹5,000</td></tr>
+            <tr><td>GST & Taxation</td><td>Finance</td><td>2 Months</td><td class="fee-green">₹3,500</td></tr>
+            <tr><td>AutoCAD</td><td>Design</td><td>4 Months</td><td class="fee-green">₹5,500</td></tr>
+            <tr><td>Cyber Security Basics</td><td>Networking</td><td>4 Months</td><td class="fee-green">₹5,500</td></tr>
+            <tr><td>Basic Computer Course</td><td>Office Basics</td><td>1 Month</td><td class="fee-green">₹1,500</td></tr>
+            <tr><td>MS Office Complete</td><td>Office Basics</td><td>2 Months</td><td class="fee-green">₹2,000</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <h2>Enroll in Your Favourite Course!</h2>
+    <p>Contact us today and start your IT journey with MICT Computer Education.</p>
+    <a href="/contact" class="btn-white"><i class="fas fa-sign-in-alt"></i> Apply Now</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-graduation-cap"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Advanced computer education for the next generation of IT professionals.</p>
+            <span class="gold">✦ Govt. Recognised Institution</span>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-university"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Delivering quality KLiC & MKCL certified IT education since 2000.</p>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-envelope"></i></span>
+            <h4>Contact</h4>
+            <p>info@mict.edu<br>+91 98765 43210<br>Maharashtra, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 MICT Computer Education. All Rights Reserved.</div>
+</footer>
+
+<script>
+function filterCat(cat) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.cat-block').forEach(block => {
+        if (cat === 'all' || block.dataset.cat === cat) {
+            block.classList.remove('hidden');
+        } else {
+            block.classList.add('hidden');
+        }
+    });
+}
+</script>
+
+</body>
+</html>

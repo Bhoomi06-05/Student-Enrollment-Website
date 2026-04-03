@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Form - MICT Computer Education</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f7fa; color: #222; overflow-x: hidden; }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #1a3a5c; padding: 0 40px; height: 66px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-brand-icon { width: 44px; height: 44px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1a3a5c; font-size: 1.3rem; }
+        .nav-brand-text .title { color: #fff; font-size: 1rem; font-weight: 700; display: block; }
+        .nav-brand-text .sub   { color: #f0a500; font-size: 0.68rem; display: block; }
+        nav ul { list-style: none; display: flex; gap: 4px; align-items: center; }
+        nav ul li a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.85rem; font-weight: 500; padding: 7px 14px; border-radius: 5px; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+        nav ul li a:hover, nav ul li a.active { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .page-hero { background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%); padding: 100px 40px 60px; text-align: center; }
+        .page-hero .tag { display: inline-block; background: rgba(240,165,0,0.18); border: 1px solid rgba(240,165,0,0.5); color: #f7c948; font-size: 0.78rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 7px 22px; border-radius: 30px; margin-bottom: 18px; }
+        .page-hero h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; color: #fff; margin-bottom: 14px; }
+        .page-hero h1 span { color: #f0a500; }
+        .page-hero p { color: rgba(255,255,255,0.75); font-size: 1rem; max-width: 560px; margin: 0 auto; }
+        .breadcrumb { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+        .breadcrumb a { color: #f0a500; text-decoration: none; }
+
+        .form-section { padding: 60px 40px; max-width: 900px; margin: 0 auto; }
+        .form-card { background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
+        .form-card-header { background: #1a3a5c; padding: 28px 32px; display: flex; align-items: center; gap: 16px; }
+        .form-card-header .logo-box { background: white; border-radius: 10px; width: 56px; height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .form-card-header .logo-box i { color: #1a3a5c; font-size: 1.5rem; }
+        .form-card-header h2 { color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+        .form-card-header p  { color: rgba(255,255,255,0.65); font-size: 0.78rem; }
+        .form-body { padding: 32px; }
+
+        .section-label { font-size: 0.78rem; font-weight: 700; color: #1a3a5c; text-transform: uppercase; letter-spacing: 1.5px; margin: 28px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; display: flex; align-items: center; gap: 8px; }
+        .section-label:first-child { margin-top: 0; }
+        .section-label i { color: #27ae60; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field label { font-size: 0.78rem; font-weight: 600; color: #555; }
+        .field label .req { color: #e74c3c; }
+        .field input, .field select, .field textarea { border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 10px 12px; font-size: 0.85rem; font-family: 'Poppins', sans-serif; color: #222; background: #fafafa; transition: border-color 0.2s, background 0.2s; width: 100%; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1a3a5c; background: #fff; }
+        .field textarea { resize: vertical; min-height: 80px; }
+
+        .courses-box { background: #f8f9fb; border-radius: 12px; border: 1.5px solid #e8e8e8; padding: 20px; }
+        .course-cat { margin-bottom: 18px; }
+        .course-cat:last-child { margin-bottom: 0; }
+        .course-cat-title { font-size: 0.75rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 12px; }
+        .cat-mkcl { background: #edfaf3; color: #1a8a4a; }
+        .cat-mes  { background: #fffbea; color: #b7860b; }
+        .cat-prog { background: #f0f0ff; color: #5c5ce0; }
+        .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .course-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #444; cursor: pointer; padding: 6px 10px; border-radius: 8px; border: 1.5px solid transparent; transition: all 0.2s; }
+        .course-item:hover { background: #fff; border-color: #e0e0e0; }
+        .course-item input[type=checkbox] { accent-color: #1a3a5c; width: 15px; height: 15px; flex-shrink: 0; }
+        .course-item.selected { background: #edfaf3; border-color: #27ae60; color: #1a8a4a; font-weight: 600; }
+
+        .qual-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .qual-table th { background: #f0f4f8; padding: 10px 12px; text-align: left; font-weight: 600; color: #1a3a5c; border: 1px solid #e0e0e0; font-size: 0.75rem; }
+        .qual-table td { padding: 6px 4px; border: 1px solid #e0e0e0; }
+        .qual-table td input { border: none; background: transparent; width: 100%; font-size: 0.8rem; color: #222; font-family: 'Poppins', sans-serif; padding: 6px 8px; outline: none; }
+        .qual-table td input:focus { background: #f0f8ff; }
+
+        .source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .source-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #444; cursor: pointer; }
+        .source-item input { accent-color: #1a3a5c; }
+
+        .rules-box { background: #fff8f0; border-radius: 10px; border: 1.5px solid #ffe0b2; padding: 18px 20px; }
+        .rules-box ul { padding-left: 18px; }
+        .rules-box li { font-size: 0.8rem; color: #666; line-height: 1.9; }
+
+        .agree-row { display: flex; align-items: flex-start; gap: 12px; margin-top: 16px; padding: 14px 16px; background: #f0f8f4; border-radius: 8px; border: 1.5px solid #b2dfcc; }
+        .agree-row input { accent-color: #27ae60; width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+        .agree-row label { font-size: 0.8rem; color: #444; line-height: 1.7; cursor: pointer; }
+
+        .sign-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 24px; }
+        .sign-box { border-top: 2px solid #e0e0e0; padding-top: 10px; text-align: center; }
+        .sign-box span { font-size: 0.75rem; color: #888; }
+
+        .submit-row { display: flex; gap: 14px; margin-top: 28px; }
+        .btn-submit { flex: 1; background: #1a3a5c; color: white; border: none; border-radius: 10px; padding: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.3s, transform 0.2s; }
+        .btn-submit:hover { background: #27ae60; transform: translateY(-1px); }
+        .btn-reset { background: white; color: #888; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 14px 24px; font-size: 0.85rem; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.2s; }
+        .btn-reset:hover { border-color: #e74c3c; color: #e74c3c; }
+
+        .success-msg { display: none; background: #edfaf3; border: 2px solid #27ae60; border-radius: 12px; padding: 24px; text-align: center; margin-top: 20px; }
+        .success-msg i { font-size: 2.5rem; color: #27ae60; display: block; margin-bottom: 10px; }
+        .success-msg h3 { color: #1a8a4a; font-size: 1.1rem; margin-bottom: 6px; }
+        .success-msg p  { color: #666; font-size: 0.85rem; }
+
+        footer { background: #1a3a5c; padding: 46px 40px 20px; }
+        .footer-top { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); max-width: 960px; margin: 0 auto; }
+        .footer-col { text-align: center; }
+        .footer-col .f-icon { font-size: 1.5rem; color: #27ae60; margin-bottom: 10px; display: block; }
+        .footer-col h4 { color: #fff; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+        .footer-col p  { color: rgba(255,255,255,0.55); font-size: 0.8rem; line-height: 1.6; }
+        .footer-bottom { text-align: center; padding-top: 20px; color: rgba(255,255,255,0.4); font-size: 0.78rem; }
+
+        @media (max-width: 700px) {
+            header { padding: 0 18px; }
+            .form-section { padding: 30px 16px; }
+            .form-body { padding: 20px 16px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .span-2, .span-3 { grid-column: span 1; }
+            .course-grid { grid-template-columns: 1fr 1fr; }
+            .source-grid { grid-template-columns: 1fr 1fr; }
+            .sign-row { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/" class="nav-brand">
+        <div class="nav-brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="nav-brand-text">
+            <span class="title">MICT Computer Education</span>
+            <span class="sub">✦ Student Enrollment Portal</span>
+        </div>
+    </a>
+    <nav>
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="/fees"><i class="fas fa-rupee-sign"></i> Fees</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/enroll" class="active"><i class="fas fa-edit"></i> Enroll</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="tag"><i class="fas fa-edit"></i> &nbsp; Admission Form</span>
+    <h1>Student <span>Enrollment</span> Form</h1>
+    <p>Fill in the details below to apply for admission at MICT Computer Education.</p>
+    <div class="breadcrumb">
+        <a href="/"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i>
+        <span>Enroll</span>
+    </div>
+</section>
+
+<div class="form-section">
+    <div class="form-card">
+        <div class="form-card-header">
+            <div class="logo-box"><i class="fas fa-graduation-cap"></i></div>
+            <div>
+                <h2>MICT Computer Education — Admission Form</h2>
+                <p>Maharashtra Education Society &nbsp;|&nbsp; Govt. Recognised &nbsp;|&nbsp; Regd. No. V030085 &nbsp;|&nbsp; MAHA/TH/223/95.F-4545</p>
+            </div>
+        </div>
+
+        <div class="form-body">
+
+            <div class="section-label"><i class="fas fa-book-open"></i> Course Selection</div>
+            <div class="courses-box">
+                <div class="course-cat">
+                    <span class="course-cat-title cat-mkcl">MKCL Certified Courses</span>
+                    <div class="course-grid">
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> MS-CIT</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> KLiC Tally ERP with GST</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> KLiC Advanced Excel</label>
+                    </div>
+                </div>
+                <div class="course-cat">
+                    <span class="course-cat-title cat-mes">MES Certified Courses</span>
+                    <div class="course-grid">
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Advanced Excel</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Tally ERP with GST</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Advanced MS Office</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> DTP</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Web Designing</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Internet</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Hardware</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Networking</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> AutoCAD</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> C / C++</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Marathi Typing</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> English Typing</label>
+                    </div>
+                </div>
+                <div class="course-cat">
+                    <span class="course-cat-title cat-prog">Programming & Design</span>
+                    <div class="course-grid">
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Python</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Java</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Web Development</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> SQL & Database</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Android Development</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Photoshop</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> CorelDRAW</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> Video Editing</label>
+                        <label class="course-item"><input type="checkbox" onchange="toggleSelected(this)"> UI/UX Design</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-label"><i class="fas fa-user"></i> Personal Details</div>
+            <div class="grid-3">
+                <div class="field">
+                    <label>Title</label>
+                    <select>
+                        <option value="">Select</option>
+                        <option>Mr.</option>
+                        <option>Mrs.</option>
+                        <option>Miss</option>
+                    </select>
+                </div>
+                <div class="field span-2">
+                    <label>Full Name <span class="req">*</span></label>
+                    <input type="text" id="fullName" placeholder="As per school / college certificate">
+                </div>
+            </div>
+            <div class="grid-2" style="margin-top:16px;">
+                <div class="field">
+                    <label>Date of Birth <span class="req">*</span></label>
+                    <input type="date" id="dob">
+                </div>
+                <div class="field">
+                    <label>Gender <span class="req">*</span></label>
+                    <select id="gender">
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Transgender</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Marital Status</label>
+                    <select>
+                        <option value="">Select</option>
+                        <option>Unmarried</option>
+                        <option>Married</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Aadhar Number <span class="req">*</span></label>
+                    <input type="text" id="aadhar" placeholder="12-digit Aadhar number" maxlength="12">
+                </div>
+            </div>
+
+            <div class="section-label"><i class="fas fa-phone"></i> Contact Details</div>
+            <div class="grid-2">
+                <div class="field">
+                    <label>WhatsApp Number <span class="req">*</span></label>
+                    <input type="tel" id="whatsapp" placeholder="+91 XXXXX XXXXX">
+                </div>
+                <div class="field">
+                    <label>Contact Number</label>
+                    <input type="tel" placeholder="+91 XXXXX XXXXX">
+                </div>
+                <div class="field span-2">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="your@email.com">
+                </div>
+                <div class="field span-2">
+                    <label>Full Address <span class="req">*</span></label>
+                    <textarea id="address" placeholder="House No., Street, Colony, Village/Suburb, City, District, Pin Code"></textarea>
+                </div>
+            </div>
+
+            <div class="section-label"><i class="fas fa-briefcase"></i> Occupation & Reference</div>
+            <div class="grid-2">
+                <div class="field">
+                    <label>Occupation</label>
+                    <select>
+                        <option value="">Select</option>
+                        <option>Student</option>
+                        <option>Employee</option>
+                        <option>Self-Employed</option>
+                        <option>Housewife</option>
+                        <option>Unemployed</option>
+                        <option>Retired</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Reference By</label>
+                    <input type="text" placeholder="Name of person who referred you">
+                </div>
+            </div>
+            <div style="margin-top:14px;">
+                <label style="font-size:0.78rem; font-weight:600; color:#555;">Source of Admission</label>
+                <div class="source-grid">
+                    <label class="source-item"><input type="checkbox"> Friends / Family</label>
+                    <label class="source-item"><input type="checkbox"> Newspaper</label>
+                    <label class="source-item"><input type="checkbox"> Hoarding / Poster</label>
+                    <label class="source-item"><input type="checkbox"> WhatsApp</label>
+                    <label class="source-item"><input type="checkbox"> Facebook</label>
+                    <label class="source-item"><input type="checkbox"> Instagram</label>
+                    <label class="source-item"><input type="checkbox"> YouTube</label>
+                    <label class="source-item"><input type="checkbox"> Other</label>
+                </div>
+            </div>
+
+            <div class="section-label"><i class="fas fa-graduation-cap"></i> Qualification Details</div>
+            <div style="overflow-x:auto;">
+                <table class="qual-table">
+                    <thead>
+                        <tr>
+                            <th>Name of School / College</th>
+                            <th>University / Board</th>
+                            <th>Qualification</th>
+                            <th>Year of Passing</th>
+                            <th>Class / Division</th>
+                            <th>% of Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="School name"></td>
+                            <td><input type="text" placeholder="Board name"></td>
+                            <td><input type="text" placeholder="SSC / HSC"></td>
+                            <td><input type="text" placeholder="Year"></td>
+                            <td><input type="text" placeholder="1st / 2nd"></td>
+                            <td><input type="text" placeholder="%"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" placeholder="College name"></td>
+                            <td><input type="text" placeholder="University"></td>
+                            <td><input type="text" placeholder="B.A / B.Com / B.Sc"></td>
+                            <td><input type="text" placeholder="Year"></td>
+                            <td><input type="text" placeholder="1st / 2nd"></td>
+                            <td><input type="text" placeholder="%"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-label"><i class="fas fa-gavel"></i> Rules & Regulations</div>
+            <div class="rules-box">
+                <ul>
+                    <li>100% attendance is compulsory in the class.</li>
+                    <li>MS-CIT course will be in batch system only.</li>
+                    <li>The application must be submitted if student remains absent for more than 5 days.</li>
+                    <li>Student must attend their batch time only.</li>
+                    <li>Mobile should be in silent mode during classroom.</li>
+                    <li>Installment should be paid before due date to avoid late fee Rs 100/- per day.</li>
+                    <li>It's student's responsibility to cover their syllabus if absent without information.</li>
+                    <li>Strict discipline must be maintained by everyone.</li>
+                    <li>Fees once paid will not be refundable or transferable under any circumstance.</li>
+                    <li>Students admitted for specific courses will lose their claim if not attending the same.</li>
+                    <li>If course validity expires, student must take re-admission by paying full fees.</li>
+                </ul>
+            </div>
+            <div class="agree-row">
+                <input type="checkbox" id="agree">
+                <label for="agree">I hereby agree to abide by the rules & regulations of MICT Computer Education from time to time in force. I have read the above rules carefully and understood them, and will not ask for refund if I discontinue.</label>
+            </div>
+
+            <div class="sign-row">
+                <div class="sign-box"><span>Student's Signature</span></div>
+                <div class="sign-box"><span>Parent / Guardian's Signature</span></div>
+            </div>
+
+            <div class="submit-row">
+                <button class="btn-submit" onclick="submitForm()">
+                    <i class="fas fa-paper-plane"></i> Submit Admission Form
+                </button>
+                <button class="btn-reset" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+
+            <div class="success-msg" id="successMsg">
+                <i class="fas fa-check-circle"></i>
+                <h3>Form Submitted Successfully!</h3>
+                <p>Thank you for applying to MICT Computer Education. Our team will contact you within 24 hours on your WhatsApp number.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-graduation-cap"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Advanced computer education for the next generation of IT professionals.</p>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-university"></i></span>
+            <h4>MICT Computer Education</h4>
+            <p>Delivering quality KLiC & MKCL certified IT education since 2000.</p>
+        </div>
+        <div class="footer-col">
+            <span class="f-icon"><i class="fas fa-envelope"></i></span>
+            <h4>Contact</h4>
+            <p>info@mict.edu<br>+91 98765 43210<br>Maharashtra, India</p>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 MICT Computer Education. All Rights Reserved.</div>
+</footer>
+
+<script>
+function toggleSelected(checkbox) {
+    const label = checkbox.closest('label');
+    if (checkbox.checked) { label.classList.add('selected'); }
+    else { label.classList.remove('selected'); }
+}
+
+function submitForm() {
+    const agree    = document.getElementById('agree');
+    const fullName = document.getElementById('fullName').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+    const address  = document.getElementById('address').value.trim();
+    if (!fullName) { alert('Please enter your full name.'); return; }
+    if (!whatsapp) { alert('Please enter your WhatsApp number.'); return; }
+    if (!address)  { alert('Please enter your full address.'); return; }
+    if (!agree.checked) { alert('Please read and agree to the Rules & Regulations before submitting.'); return; }
+    const msg = document.getElementById('successMsg');
+    msg.style.display = 'block';
+    msg.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetForm() {
+    document.querySelectorAll('input[type=text], input[type=email], input[type=tel], input[type=date], textarea').forEach(e => e.value = '');
+    document.querySelectorAll('input[type=checkbox]').forEach(e => e.checked = false);
+    document.querySelectorAll('.course-item').forEach(e => e.classList.remove('selected'));
+    document.querySelectorAll('select').forEach(e => e.selectedIndex = 0);
+    document.getElementById('successMsg').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
